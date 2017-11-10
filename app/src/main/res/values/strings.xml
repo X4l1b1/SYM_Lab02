@@ -1,0 +1,7 @@
+<resources>
+    <string name="app_name">labo2</string>
+    <string name="title_async_activity">Send Asynchronous Request</string>
+    <string name="title_diff_activity">Send Delayed Request</string>
+    <string name="title_obj_activity">Send Object Request</string>
+    <string name="title_compr_activity">Send Compressed Request</string>
+</resources>

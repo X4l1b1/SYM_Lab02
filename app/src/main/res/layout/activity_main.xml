@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical"
+    android:gravity="center"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    >
+
+    <Button
+        android:id="@+id/asyncActivityButton"
+        android:layout_width="128dp"
+        android:layout_height="72dp"
+        android:text="Asynchrone"
+        android:layout_marginBottom="30dp"
+        />
+
+    <Button
+        android:id="@+id/diffActivityButton"
+        android:paddingTop="10dp"
+        android:layout_width="128dp"
+        android:layout_height="72dp"
+        android:text="Différé"
+        android:layout_marginBottom="30dp"
+        />
+
+    <Button
+        android:id="@+id/objActivityButton"
+        android:layout_width="128dp"
+        android:layout_height="72dp"
+        android:text="Objet"
+        android:layout_marginBottom="30dp"
+        />
+
+    <Button
+        android:id="@+id/comprActivityButton"
+        android:layout_width="128dp"
+        android:layout_height="72dp"
+        android:text="Compressé"
+        />
+
+
+</LinearLayout>
