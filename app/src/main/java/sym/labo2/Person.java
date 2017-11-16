@@ -2,12 +2,7 @@ package sym.labo2;
 
 import java.io.Serializable;
 
-/**
- * Created by lemdjo on 09.11.2017.
- */
-
 public class Person implements Serializable {
-
     private String lastname;
     private String firstname;
     private String email;
@@ -32,7 +27,6 @@ public class Person implements Serializable {
 
     @Override
     public String toString() {
-        return "{firstname :" + firstname + ", lastname : " + lastname + "email : " + email + "}";
+        return "{\"firstname\":" + firstname + ", \"lastname\":" + lastname + "\"email\":" + email + "}";
     }
-
 }

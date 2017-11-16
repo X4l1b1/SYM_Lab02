@@ -7,37 +7,42 @@
     android:layout_height="match_parent"
     >
 
-    <Button
-        android:id="@+id/asyncActivityButton"
-        android:layout_width="128dp"
-        android:layout_height="72dp"
-        android:text="Asynchrone"
-        android:layout_marginBottom="30dp"
-        />
+    <LinearLayout
+        android:orientation="horizontal"
+        android:gravity="center"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content" >
 
-    <Button
-        android:id="@+id/diffActivityButton"
-        android:paddingTop="10dp"
-        android:layout_width="128dp"
-        android:layout_height="72dp"
-        android:text="Différé"
-        android:layout_marginBottom="30dp"
-        />
+        <ImageView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="20dp"
+            android:layout_marginRight="20dp"
+            android:layout_marginLeft="20dp"
+            android:src="@drawable/title" />
 
-    <Button
-        android:id="@+id/objActivityButton"
-        android:layout_width="128dp"
-        android:layout_height="72dp"
-        android:text="Objet"
-        android:layout_marginBottom="30dp"
-        />
+    </LinearLayout>
 
-    <Button
-        android:id="@+id/comprActivityButton"
-        android:layout_width="128dp"
-        android:layout_height="72dp"
-        android:text="Compressé"
-        />
+    <LinearLayout
+        android:orientation="horizontal"
+        android:gravity="center"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
 
+        <Button
+            android:id="@+id/textActivityButton"
+            android:layout_width="128dp"
+            android:layout_height="72dp"
+            android:layout_marginRight="10dp"
+            android:text="Text" />
+
+        <Button
+            android:id="@+id/objActivityButton"
+            android:layout_width="128dp"
+            android:layout_height="72dp"
+            android:layout_marginLeft="10dp"
+            android:text="Object"/>
+
+    </LinearLayout>
 
 </LinearLayout>

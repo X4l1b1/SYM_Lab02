@@ -13,13 +13,10 @@ public class MainActivity extends AppCompatActivity {
 
     // For logging purposes
     private static final String TAG = MainActivity.class.getSimpleName();
-    public static final String EXTRA_MESSAGE = "ch.heigvd.sym.template.myapp.MAIL";
 
     // Buttons
-    private Button asyncB = null;
-    private Button diffB  = null;
+    private Button textB  = null;
     private Button objB   = null;
-    private Button comprB = null;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -27,34 +24,17 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
 
         // Link to GUI elements -- defined in res/layout/
-        this.asyncB = (Button)findViewById(R.id.asyncActivityButton);
-        this.diffB  = (Button)findViewById(R.id.diffActivityButton);
+        this.textB  = (Button)findViewById(R.id.textActivityButton);
         this.objB   = (Button)findViewById(R.id.objActivityButton);
-        this.comprB = (Button)findViewById(R.id.comprActivityButton);
-
-        asyncB.setOnClickListener(new OnClickListener(){
-
-            @Override
-            public void onClick(View v) {
-
-                Intent intent = new Intent(MainActivity.this, sym.labo2.AsyncActivity.class);
-                //   intent.putExtra(EXTRA_MESSAGE, "Async");
-
-                //   MainActivity.this.startActivityForResult(intent, 1);
-                MainActivity.this.startActivity(intent);
-                // Wrong combination, display pop-up dialog and stay on login screen
-                //    showErrorDialog(??, ??);
-            }
 
 
-        });
 
-        diffB.setOnClickListener(new OnClickListener(){
+        textB.setOnClickListener(new OnClickListener(){
 
             @Override
             public void onClick(View v) {
 
-                Intent intent = new Intent(MainActivity.this, DelayedActivity.class);
+                Intent intent = new Intent(MainActivity.this, TextActivity.class);
                 //   intent.putExtra(EXTRA_MESSAGE, "Diff");
 
                 //   MainActivity.this.startActivityForResult(intent, 1);
@@ -66,6 +46,7 @@ public class MainActivity extends AppCompatActivity {
 
         });
 
+
         objB.setOnClickListener(new OnClickListener(){
 
             @Override
@@ -73,23 +54,6 @@ public class MainActivity extends AppCompatActivity {
 
                 Intent intent = new Intent(MainActivity.this, ObjectActivity.class);
                 //   intent.putExtra(EXTRA_MESSAGE, "Object");
-
-                //   MainActivity.this.startActivityForResult(intent, 1);
-                MainActivity.this.startActivity(intent);
-                // Wrong combination, display pop-up dialog and stay on login screen
-                //    showErrorDialog(??, ??);
-            }
-
-
-        });
-
-        comprB.setOnClickListener(new OnClickListener(){
-
-            @Override
-            public void onClick(View v) {
-
-                Intent intent = new Intent(MainActivity.this, CompressedActivity.class);
-                //   intent.putExtra(EXTRA_MESSAGE, "Compr");
 
                 //   MainActivity.this.startActivityForResult(intent, 1);
                 MainActivity.this.startActivity(intent);

@@ -16,10 +16,10 @@ public class MyReceiver extends BroadcastReceiver {
 
     private static final String TAG = "MyReceiver";
 
-    private DelayedSendRequest dsr = null;
+    private TextSendRequest tsr = null;
 
-    public MyReceiver(DelayedSendRequest delayedSendRequest) {
-        this.dsr = delayedSendRequest;
+    public MyReceiver(TextSendRequest delayedSendRequest) {
+        this.tsr = delayedSendRequest;
     }
 
     @Override
@@ -34,7 +34,7 @@ public class MyReceiver extends BroadcastReceiver {
 
         if(activeNetwork != null && activeNetwork.isConnected()) {
             Log.i(TAG, "Begin to send waiting requests");
-            dsr.sendDelayedRequests();
+            tsr.sendDelayedRequests();
         }
     }
 }

@@ -7,38 +7,37 @@ import android.os.AsyncTask;
 import android.util.Log;
 import android.widget.Toast;
 
-import java.io.BufferedReader;
-import java.io.BufferedWriter;
-import java.io.IOException;
-import java.io.InputStreamReader;
-import java.io.OutputStream;
-import java.io.OutputStreamWriter;
-import java.net.HttpURLConnection;
-import java.net.URL;
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
 import java.util.ArrayList;
+import java.util.zip.Deflater;
+import java.util.zip.DeflaterOutputStream;
+import java.util.zip.Inflater;
+import java.util.zip.InflaterInputStream;
 
-import javax.net.ssl.HttpsURLConnection;
+import okhttp3.MediaType;
+import okhttp3.OkHttpClient;
+import okhttp3.Request;
+import okhttp3.RequestBody;
+import okhttp3.Response;
 
-/**
- * Created by pierre-samuelrochat on 10.11.17.
- */
 
 public class ObjectSendRequest {
-    private static final String TAG = "ObjectSendRequest";
 
-    public static final String REQUEST_METHOD = "POST";
-    public static final int READ_TIMEOUT =  5000;
-    public static final int CONNECTION_TIMEOUT = 5000;
+    private static final String TAG = "ObjectSendRequest";
 
     private ArrayList<CommunicationEventListener> listeners = new ArrayList<>();
 
     private Context context;
+    private boolean isCompressed = false;
 
     public ObjectSendRequest(Context context) {
         this.context = context;
     }
 
-    public void sendRequest(String request, String url) throws Exception {
+    public void sendRequest(String request, String url, boolean compress) throws Exception {
+
+        this.isCompressed = compress;
 
         ConnectivityManager cm =
                 (ConnectivityManager)context.getSystemService(Context.CONNECTIVITY_SERVICE);
@@ -46,7 +45,7 @@ public class ObjectSendRequest {
         NetworkInfo activeNetwork = cm.getActiveNetworkInfo();
 
         if(activeNetwork != null && activeNetwork.isConnected()) {
-            new AsyncSendRequestTask().execute(request, url);
+            new ObjectSendRequest.ObjectSendRequestTask().execute(request, url);
         } else {
             Toast.makeText(context, "Can't reach server !", Toast.LENGTH_LONG).show();
             Log.i(TAG, "Can't reach server !");
@@ -59,79 +58,125 @@ public class ObjectSendRequest {
         this.listeners.add(l);
     }
 
-    private class AsyncSendRequestTask extends AsyncTask<String, Void, String> {
+    private byte[] compress(String json) {
 
-        protected String onPreExecute(String... params) {
-            return null;
+        byte[] compressedJson = null;
+
+        Log.i(TAG, "Before compression : " + json);
+
+        try {
+            ByteArrayOutputStream baos = new ByteArrayOutputStream();
+            Deflater def = new Deflater(Deflater.BEST_COMPRESSION, true);
+            DeflaterOutputStream dos = new DeflaterOutputStream(baos, def);
+
+            dos.write(json.getBytes());
+            dos.flush();
+            dos.close();
+            baos.flush();
+            baos.close();
+
+            compressedJson = baos.toByteArray();
+
+        } catch(Exception e) {
+            e.printStackTrace();
         }
+
+        Log.i(TAG, "After compression : " + compressedJson.toString());
+
+        return compressedJson;
+    }
+
+    private String decompress(byte[] bytes) {
+
+        String decompressedJson = null;
+
+        Log.i(TAG, "Before compression : " + bytes.toString());
+
+        try {
+            ByteArrayInputStream bis = new ByteArrayInputStream(bytes);
+            Inflater inf = new Inflater(true);
+            InflaterInputStream iis = new InflaterInputStream(bis, inf);
+            ByteArrayOutputStream baos = new ByteArrayOutputStream();
+
+            int bytesRead;
+            while ((bytesRead = iis.read()) != -1) {
+                baos.write(bytesRead);
+            }
+
+            baos.flush();
+            baos.close();
+
+            decompressedJson = baos.toString();
+
+        } catch(Exception e) {
+            e.printStackTrace();
+        }
+
+        Log.i(TAG, "After compression : " + decompressedJson);
+
+        return decompressedJson;
+
+    }
+
+    private class ObjectSendRequestTask extends AsyncTask<String, Void, String> {
+
+        OkHttpClient client = new OkHttpClient();
 
         @Override
         protected String doInBackground(String... params) {
-            String url_str = params[1];
-            String result = "";
+
 
             try {
-                URL url = new URL(url_str);
 
-                HttpURLConnection conn = (HttpURLConnection)url.openConnection();
+                byte[] bodyContent;
 
-                //Set methods and timeouts
-                conn.setRequestMethod(REQUEST_METHOD);
-                conn.setReadTimeout(READ_TIMEOUT);
-                conn.setConnectTimeout(CONNECTION_TIMEOUT);
-                conn.setDoInput(true);
-                conn.setDoOutput(true);
+                Request.Builder requestBuilder = new Request.Builder();
 
-                //Connect to our url
-                conn.connect();
-
-                OutputStream os = conn.getOutputStream();
-
-                BufferedWriter writer = new BufferedWriter(new OutputStreamWriter(os, "UTF-8"));
-
-                writer.write(params[0]);
-                writer.flush();
-                writer.close();
-                os.close();
-
-                int responseCode = conn.getResponseCode();
-
-                if (responseCode == HttpsURLConnection.HTTP_OK) {
-
-                    InputStreamReader streamReader = new InputStreamReader(conn.getInputStream());
-                    BufferedReader reader = new BufferedReader(streamReader);
-
-                    Log.i(TAG, "HTTP OK");
-
-                    //Create a new buffered reader and String Builder
-                    StringBuilder stringBuilder = new StringBuilder();
-                    String inputLine;
-
-                    //Check if the line we are reading is not null
-                    while ((inputLine = reader.readLine()) != null) {
-                        Log.i(TAG, "Getting lines");
-                        stringBuilder.append(inputLine);
-                    }
-
-                    result = stringBuilder.toString();
-
+                if(isCompressed) {
+                    bodyContent = compress(params[0]);
+                    requestBuilder
+                            .addHeader("X-Network", "CSD")
+                            .addHeader("X-Content-Encoding", "deflate");
                 } else {
-                    return "Failed !";
+                    bodyContent = params[0].getBytes();
                 }
 
-            } catch (IOException e) {
+                RequestBody body =
+                        RequestBody.create(MediaType.parse("application/json; charset=utf-8"),
+                                bodyContent);
+
+
+                Request request = requestBuilder
+                        .url(params[1])
+                        .post(body)
+                        .build();
+
+                Response response = client.newCall(request).execute();
+
+                if(isCompressed)
+                    return decompress(response.body().bytes());
+
+                return response.body().string();
+
+
+            }catch (Exception e){
                 e.printStackTrace();
             }
-            return result;
+
+            return null;
 
         }
 
-        protected void onProgressUpdate(Integer... values) {}
-
         protected void onPostExecute(String res) {
             for(CommunicationEventListener l : listeners) {
-                Log.i(TAG, "Notifying Listeners");
-                l.handleServerResponse(res);
+
+                if(res != null) {
+                    l.handleServerResponse(res);
+                    Log.i(TAG, "Notifying Listeners");
+                } else {
+                    Toast.makeText(context, "null response", Toast.LENGTH_LONG).show();
+                    Log.i(TAG, "null response");
+                }
             }
         }
     }

@@ -19,16 +19,8 @@
             </intent-filter>
         </activity>
         <activity
-            android:name=".AsyncActivity"
-            android:label="@string/title_async_activity" >
-        </activity>
-        <activity
-            android:name=".DelayedActivity"
+            android:name=".TextActivity"
             android:label="@string/title_diff_activity" >
-        </activity>
-        <activity
-            android:name=".CompressedActivity"
-            android:label="@string/title_compr_activity" >
         </activity>
         <activity
             android:name=".ObjectActivity"

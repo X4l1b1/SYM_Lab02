@@ -6,7 +6,7 @@
 
 
     <Switch
-        android:id="@+id/compressSwitch"
+        android:id="@+id/delaySwitch"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginLeft="20dp"
@@ -17,8 +17,8 @@
         android:layout_height="wrap_content"
         android:layout_marginTop="22dp"
         android:layout_marginLeft="70dp"
-        android:text="Compress"
-        android:textSize="15dp" />
+        android:text="Delay"
+        android:textSize="15dp"/>
 
     <Button
         android:id="@+id/button"
@@ -32,35 +32,13 @@
         android:layout_alignParentRight="true"/>
 
     <EditText
-        android:id="@+id/firstname"
+        android:id="@+id/text"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginTop="70dp"
         android:layout_marginLeft="20dp"
         android:layout_marginRight="20dp"
-        android:hint="firstname"
-        android:inputType="textEmailAddress" >
-    </EditText>
-
-    <EditText
-        android:id="@+id/lastname"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="110dp"
-        android:layout_marginLeft="20dp"
-        android:layout_marginRight="20dp"
-        android:hint="lastname"
-        android:inputType="textEmailAddress" >
-    </EditText>
-
-    <EditText
-        android:id="@+id/email"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="150dp"
-        android:layout_marginLeft="20dp"
-        android:layout_marginRight="20dp"
-        android:hint="email"
+        android:hint="text"
         android:inputType="textEmailAddress" >
     </EditText>
 
@@ -71,7 +49,7 @@
         android:text="Result : "
         android:textStyle="bold|italic"
         android:textSize="15dp"
-        android:layout_marginTop="220dp"
+        android:layout_marginTop="140dp"
         android:layout_marginRight="20dp"
         android:layout_marginLeft="20dp" />
 
@@ -82,9 +60,9 @@
         android:layout_gravity="center_horizontal"
         android:text="-"
         android:textSize="15dp"
-        android:layout_marginTop="250dp"
+        android:layout_marginTop="170dp"
         android:layout_marginRight="20dp"
         android:layout_marginLeft="20dp"
-        android:maxLines = "15"
+        android:maxLines = "30"
         android:scrollbars = "vertical"/>
 </RelativeLayout>
