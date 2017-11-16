@@ -24,7 +24,7 @@
         android:id="@+id/button"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Send Object"
+        android:text="Send Text"
         android:layout_marginTop="10dp"
         android:layout_marginRight="20dp"
         android:layout_gravity="right"
@@ -63,6 +63,6 @@
         android:layout_marginTop="170dp"
         android:layout_marginRight="20dp"
         android:layout_marginLeft="20dp"
-        android:maxLines = "30"
+        android:maxLines = "22"
         android:scrollbars = "vertical"/>
 </RelativeLayout>
