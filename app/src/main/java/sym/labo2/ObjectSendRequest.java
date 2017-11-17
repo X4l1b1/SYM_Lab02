@@ -44,6 +44,7 @@ public class ObjectSendRequest {
 
         NetworkInfo activeNetwork = cm.getActiveNetworkInfo();
 
+        //Execute async request if connection is available
         if(activeNetwork != null && activeNetwork.isConnected()) {
             new ObjectSendRequest.ObjectSendRequestTask().execute(request, url);
         } else {
@@ -55,6 +56,7 @@ public class ObjectSendRequest {
 
 
     public void setCommunicationEventListener (CommunicationEventListener l) {
+        //Add listener to the list of listeners
         this.listeners.add(l);
     }
 
@@ -90,7 +92,7 @@ public class ObjectSendRequest {
 
         String decompressedJson = null;
 
-        Log.i(TAG, "Before compression : " + bytes.toString());
+        Log.i(TAG, "Before decompression : " + bytes.toString());
 
         try {
             ByteArrayInputStream bis = new ByteArrayInputStream(bytes);
@@ -112,7 +114,7 @@ public class ObjectSendRequest {
             e.printStackTrace();
         }
 
-        Log.i(TAG, "After compression : " + decompressedJson);
+        Log.i(TAG, "After decompression : " + decompressedJson);
 
         return decompressedJson;
 
@@ -130,8 +132,10 @@ public class ObjectSendRequest {
 
                 byte[] bodyContent;
 
+                //OkHttp request builder
                 Request.Builder requestBuilder = new Request.Builder();
 
+                //Compress the object and add the corresponding headers to request
                 if(isCompressed) {
                     bodyContent = compress(params[0]);
                     requestBuilder
@@ -145,14 +149,16 @@ public class ObjectSendRequest {
                         RequestBody.create(MediaType.parse("application/json; charset=utf-8"),
                                 bodyContent);
 
-
+                //Create OkHttp request
                 Request request = requestBuilder
                         .url(params[1])
                         .post(body)
                         .build();
 
+                //Execute request
                 Response response = client.newCall(request).execute();
 
+                //Decompress the response if it was compressed in the first place
                 if(isCompressed)
                     return decompress(response.body().bytes());
 
@@ -168,8 +174,9 @@ public class ObjectSendRequest {
         }
 
         protected void onPostExecute(String res) {
-            for(CommunicationEventListener l : listeners) {
 
+            //Notify all subscribed listeners
+            for(CommunicationEventListener l : listeners) {
                 if(res != null) {
                     l.handleServerResponse(res);
                     Log.i(TAG, "Notifying Listeners");

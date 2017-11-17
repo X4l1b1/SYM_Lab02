@@ -24,9 +24,4 @@ public class Person implements Serializable {
     public String getFirstname() { return firstname;}
 
     public String getEmail() { return email; }
-
-    @Override
-    public String toString() {
-        return "{\"firstname\":" + firstname + ", \"lastname\":" + lastname + "\"email\":" + email + "}";
-    }
 }

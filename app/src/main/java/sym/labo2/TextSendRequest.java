@@ -46,6 +46,7 @@ public class TextSendRequest {
 
         activeNetworkInfo = cm.getActiveNetworkInfo();
 
+        //Execute async request if connection is available, otherwise store it if delay is true
         if(activeNetworkInfo != null && activeNetworkInfo.isConnected()) {
             new DelayedSendRequestTask().execute(request, url);
         } else {
@@ -61,6 +62,7 @@ public class TextSendRequest {
 
     public void sendDelayedRequests() {
 
+        //Execute async request for every waiting request if connection is available
         for(Pair<String, String> p : delayedRequests) {
 
             activeNetworkInfo = cm.getActiveNetworkInfo();
@@ -76,6 +78,7 @@ public class TextSendRequest {
     }
 
     public void setCommunicationEventListener (CommunicationEventListener l) {
+        //Add listener to the list of listeners
         this.listeners.add(l);
     }
 
@@ -89,9 +92,10 @@ public class TextSendRequest {
             try {
 
                 RequestBody body =
-                        RequestBody.create(MediaType.parse("application/json; charset=utf-8"),
+                        RequestBody.create(MediaType.parse("application/text; charset=utf-8"),
                                 params[0].getBytes());
 
+                //Create OkHttp request
                 Request request = new Request.Builder()
                         .url(params[1])
                         .post(body)
@@ -111,8 +115,9 @@ public class TextSendRequest {
         }
 
         protected void onPostExecute(String res) {
-            for(CommunicationEventListener l : listeners) {
 
+            //Notify all subscribed listeners
+            for(CommunicationEventListener l : listeners) {
                 if(res != null) {
                     l.handleServerResponse(res);
                     Log.i(TAG, "Notifying Listeners");

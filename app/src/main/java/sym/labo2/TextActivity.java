@@ -14,24 +14,30 @@ public class TextActivity extends AppCompatActivity {
 
     private static final String TAG = "TextActivity";
 
+    //UI elements
     private Button button = null;
     private TextView resultText = null;
-    private TextSendRequest tsr = null;
     private Switch delaySwitch = null;
     private EditText text = null;
+
+    //Request sender
+    private TextSendRequest tsr = null;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_text);
 
+        //Scrollable text view
         this.resultText = (TextView) findViewById(R.id.textView);
         resultText.setMovementMethod(new ScrollingMovementMethod());
 
+        //Set UI elements
         this.button = (Button) findViewById(R.id.button);
         this.delaySwitch = (Switch)findViewById(R.id.delaySwitch);
         this.text = (EditText)findViewById(R.id.text);
 
+        //Button behaviour
         button.setOnClickListener(new View.OnClickListener(){
             @Override
             public void onClick(View v) {
@@ -39,6 +45,7 @@ public class TextActivity extends AppCompatActivity {
             }
         });
 
+        //Create request object
         tsr = new TextSendRequest(this.getApplicationContext());
         tsr.setCommunicationEventListener( new CommunicationEventListener(){
             public boolean handleServerResponse(String response) {
@@ -51,7 +58,10 @@ public class TextActivity extends AppCompatActivity {
 
     }
 
+
     private void send() {
+
+        //Send request
         try {
             tsr.sendRequest(text.getText().toString(), "http://sym.iict.ch/rest/txt", delaySwitch.isChecked());
         } catch (Exception e) {
