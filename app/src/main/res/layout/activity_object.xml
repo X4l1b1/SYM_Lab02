@@ -1,23 +1,55 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:screenOrientation="portrait"
     android:orientation="vertical"
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
 
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="22dp"
+        android:layout_marginLeft="20dp"
+        android:text="Normal"
+        android:textSize="15dp" />
+
     <Switch
         android:id="@+id/compressSwitch"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginLeft="20dp"
+        android:layout_marginLeft="80dp"
         android:layout_marginTop="20dp"/>
 
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="22dp"
-        android:layout_marginLeft="70dp"
+        android:layout_marginLeft="128dp"
         android:text="Compress"
+        android:textSize="15dp" />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="52dp"
+        android:layout_marginLeft="30dp"
+        android:text="JSON"
+        android:textSize="15dp" />
+
+    <Switch
+        android:id="@+id/serializationSwitch"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="80dp"
+        android:layout_marginTop="50dp"/>
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="52dp"
+        android:layout_marginLeft="128dp"
+        android:text="XML"
         android:textSize="15dp" />
 
     <Button
@@ -35,7 +67,7 @@
         android:id="@+id/firstname"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="70dp"
+        android:layout_marginTop="75dp"
         android:layout_marginLeft="20dp"
         android:layout_marginRight="20dp"
         android:hint="firstname"
@@ -43,26 +75,36 @@
     </EditText>
 
     <EditText
-        android:id="@+id/lastname"
+        android:id="@+id/name"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="110dp"
+        android:layout_marginTop="115dp"
         android:layout_marginLeft="20dp"
         android:layout_marginRight="20dp"
-        android:hint="lastname"
+        android:hint="name"
         android:inputType="textEmailAddress" >
     </EditText>
 
     <EditText
-        android:id="@+id/email"
+        android:id="@+id/phone"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="150dp"
+        android:layout_marginTop="155dp"
         android:layout_marginLeft="20dp"
-        android:layout_marginRight="20dp"
-        android:hint="email"
+        android:layout_marginRight="150dp"
+        android:hint="phone"
         android:inputType="textEmailAddress" >
     </EditText>
+
+    <Spinner
+        android:id="@+id/gender"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="170dp"
+        android:layout_marginRight="20dp"
+        android:layout_gravity="right"
+        android:layout_alignParentEnd="true"
+        android:layout_alignParentRight="true"/>
 
     <TextView
         android:layout_width="match_parent"

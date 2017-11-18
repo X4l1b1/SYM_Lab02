@@ -16,10 +16,10 @@ public class MyReceiver extends BroadcastReceiver {
 
     private static final String TAG = "MyReceiver";
 
-    private TextSendRequest tsr = null;
+    private CommunicationManager communicationManager;
 
-    public MyReceiver(TextSendRequest delayedSendRequest) {
-        this.tsr = delayedSendRequest;
+    public MyReceiver(CommunicationManager cm) {
+        this.communicationManager = cm;
     }
 
     @Override
@@ -34,7 +34,7 @@ public class MyReceiver extends BroadcastReceiver {
 
         if(activeNetwork != null && activeNetwork.isConnected()) {
             Log.i(TAG, "Begin to send waiting requests");
-            tsr.sendDelayedRequests();
+            communicationManager.sendDelayedRequests();
         }
     }
 }

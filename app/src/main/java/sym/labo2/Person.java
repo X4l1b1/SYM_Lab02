@@ -3,25 +3,45 @@ package sym.labo2;
 import java.io.Serializable;
 
 public class Person implements Serializable {
-    private String lastname;
+    private String name;
     private String firstname;
-    private String email;
+    private String middlename;
+    private String gender;
+    private String phone;
 
-    Person(String firstname, String lastname, String email) {
+    Person(String firstname, String middlename, String name, String gender, String phone) {
         this.firstname = firstname;
-        this.lastname = lastname;
-        this.email = email;
+        this.middlename = middlename;
+        this.name = name;
+        this.gender = gender;
+        this.phone = phone;
     }
 
-    public void setLastname(String lastname) { this.lastname = lastname; }
+    Person(String firstname, String name, String gender, String phone) {
+        this.firstname = firstname;
+        this.middlename = "";
+        this.name = name;
+        this.gender = gender;
+        this.phone = phone;
+    }
+
+    public void setName(String lastname) { this.name = lastname; }
 
     public void setFirstname(String firstname) { this.firstname = firstname; }
 
-    public void setEmail(String email) { this.email = email; }
+    public void setMiddlename(String firstname) { this.firstname = firstname; }
 
-    public String getLastname() { return lastname; }
+    public void setGender(String gender) { this.gender = gender; }
 
-    public String getFirstname() { return firstname;}
+    public void setPhone(String phone) { this.phone = phone; }
 
-    public String getEmail() { return email; }
+    public String getName() { return name; }
+
+    public String getFirstname() { return firstname; }
+
+    public String getMiddlename() { return middlename; }
+
+    public String getGender() { return gender; }
+
+    public String getPhone() { return phone; }
 }
