@@ -67,24 +67,5 @@ public class MainActivity extends AppCompatActivity {
         });
     }
 
-
-    // Creates and display an error dialog
-    protected void showErrorDialog(String mail, String passwd) {
-		/*
-		 * Pop-up dialog to show error
-		 */
-        AlertDialog.Builder alertbd = new AlertDialog.Builder(this);
-        alertbd.setIcon(android.R.drawable.ic_dialog_alert);
-        alertbd.setTitle("Test");
-        alertbd.setMessage("Test");
-        alertbd.setPositiveButton(android.R.string.yes, new DialogInterface.OnClickListener() {
-            public void onClick(DialogInterface dialog, int which) {
-                // we do nothing...
-                // dialog close automatically
-
-            }
-        });
-        alertbd.create().show();
-    }
 }
 

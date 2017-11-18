@@ -107,11 +107,11 @@ public class ObjectActivity extends AppCompatActivity {
         //Recreate object from received response
         JsonObject jsonObject = gson.fromJson(s, JsonObject.class);
 
-        Person p = gson.fromJson(jsonObject.get("Person"), Person.class);
+        Person p = gson.fromJson(jsonObject.get("person"), Person.class);
         Log.i(TAG, "Created object from response : firstname = " + p.getFirstname()
                 + ", name = " + p.getName() + ", gender = " + p.getGender() + ", phone = " + p.getPhone());
 
-        resultText.setText(jsonObject.get("Person").toString());
+        resultText.setText(jsonObject.get("person").toString());
     }
 
     private void deserializeXML(String s) {
