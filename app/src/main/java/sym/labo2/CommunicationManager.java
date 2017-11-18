@@ -24,6 +24,13 @@ import okhttp3.Request;
 import okhttp3.RequestBody;
 import okhttp3.Response;
 
+/**
+ * CommunicationManager that creates an async request and notify subscribed listeners
+ * when it receive a response.
+ * The request content can be TXT, JSON or XML format
+ * It can be compressed if needed
+ * If there is no connection available, the request can be stored until connection is retrieved
+ */
 public class CommunicationManager {
 
     private static final String TAG = "ObjectSendRequest";
@@ -50,11 +57,14 @@ public class CommunicationManager {
 
     public CommunicationManager(Context context) {
 
+        //Context of calling activity
         this.ctx = context;
+        this.connectivityManager =
+                (ConnectivityManager)context.getSystemService(Context.CONNECTIVITY_SERVICE);
 
-        this.connectivityManager = (ConnectivityManager)context.getSystemService(Context.CONNECTIVITY_SERVICE);
-
-        context.registerReceiver(new MyReceiver(this),
+        //Register the context of the activity to a change of connectivity event
+        //When a change occur, method onReceive() of CustomReceiver class is executed
+        context.registerReceiver(new CustomReceiver(this),
                 new IntentFilter(ConnectivityManager.CONNECTIVITY_ACTION));
     }
 
@@ -137,7 +147,6 @@ public class CommunicationManager {
         String decompressedJson = null;
 
         Log.i(TAG, "Before decompression : " + bytes.toString());
-
 
         ByteArrayInputStream bis = new ByteArrayInputStream(bytes);
         Inflater inf = new Inflater(true);
@@ -224,6 +233,7 @@ public class CommunicationManager {
 
                 response = client.newCall(request).execute();
 
+                //Decompress response
                 if(isCompressed) {
                     return decompress(response.body().bytes());
                 }

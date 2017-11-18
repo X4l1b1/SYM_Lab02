@@ -22,6 +22,9 @@ import org.jdom2.Document;
 import org.jdom2.Element;
 import org.jdom2.output.XMLOutputter;
 
+/**
+ * Activity used to send an object serializer as JSON or XML to a server and display the response
+ */
 public class ObjectActivity extends AppCompatActivity {
 
     private static final String TAG = "ObjectActivity";
@@ -53,7 +56,7 @@ public class ObjectActivity extends AppCompatActivity {
         this.resultText = (TextView)findViewById(R.id.textView);
         resultText.setMovementMethod(new ScrollingMovementMethod());
 
-        //Set UI elements
+        //Sets UI elements
         this.button = findViewById(R.id.button);
         this.compressSwitch = findViewById(R.id.compressSwitch);
         this.serializationSwitch = findViewById(R.id.serializationSwitch);
@@ -62,6 +65,7 @@ public class ObjectActivity extends AppCompatActivity {
         this.phone = findViewById(R.id.phone);
         this.gender = findViewById(R.id.gender);
 
+        //Init gender spinner
         ArrayAdapter<CharSequence> adapter = ArrayAdapter.createFromResource(this,
                 R.array.genders, android.R.layout.simple_spinner_item);
         adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
@@ -114,11 +118,8 @@ public class ObjectActivity extends AppCompatActivity {
         resultText.setText(jsonObject.get("person").toString());
     }
 
-    private void deserializeXML(String s) {
-        resultText.setText(s);
-    }
-
     private String serializeXML(Person p) {
+
         //Create XML from object using XML
         DocType dtype = new DocType("directory", "http://sym.iict.ch/directory.dtd");
         Element directory = new Element("directory");
@@ -136,9 +137,14 @@ public class ObjectActivity extends AppCompatActivity {
         return new XMLOutputter().outputString(doc);
     }
 
+    private void deserializeXML(String s) {
+        /* FIX ME */
+        resultText.setText(s);
+    }
+
     private void send() {
 
-        //Create object from TextEdit
+        //Create object from TextEdit fields
         Person p = new Person(firstname.getText().toString(), name.getText().toString(),
                 gender.getSelectedItem().toString(), phone.getText().toString());
 
@@ -147,6 +153,7 @@ public class ObjectActivity extends AppCompatActivity {
 
         ContentType contentType;
 
+        //Serialize to JSON formal by default or XML
         if(!serializationSwitch.isChecked()) {
             serializedObject = serializeJSON(p);
             serverAddress = JSON_SERVER;

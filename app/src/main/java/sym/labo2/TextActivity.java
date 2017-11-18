@@ -11,6 +11,9 @@ import android.widget.EditText;
 import android.widget.Switch;
 import android.widget.TextView;
 
+/**
+ * Activity used to send an to a server and display the response
+ */
 public class TextActivity extends AppCompatActivity {
 
     private static final String TAG = "TextActivity";

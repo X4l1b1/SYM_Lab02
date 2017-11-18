@@ -9,29 +9,29 @@ import android.util.Log;
 import android.widget.Toast;
 
 /**
- * Created by pierre-samuelrochat on 07.11.17.
+ * Used to test and execute waiting request when connection is retrieved
  */
+public class CustomReceiver extends BroadcastReceiver {
 
-public class MyReceiver extends BroadcastReceiver {
-
-    private static final String TAG = "MyReceiver";
+    private static final String TAG = "CustomReceiver";
 
     private CommunicationManager communicationManager;
 
-    public MyReceiver(CommunicationManager cm) {
+    public CustomReceiver(CommunicationManager cm) {
         this.communicationManager = cm;
     }
 
     @Override
     public void onReceive(Context context, Intent intent) {
 
-        Log.i(TAG, "A change occured in connection state");
+        Log.i(TAG, "A change occurred in the connection state");
 
         ConnectivityManager cm =
                 (ConnectivityManager)context.getSystemService(Context.CONNECTIVITY_SERVICE);
 
         NetworkInfo activeNetwork = cm.getActiveNetworkInfo();
 
+        //Check connectivity, send waiting requests if the connection is ON
         if(activeNetwork != null && activeNetwork.isConnected()) {
             Log.i(TAG, "Begin to send waiting requests");
             communicationManager.sendDelayedRequests();

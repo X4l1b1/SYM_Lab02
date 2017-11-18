@@ -2,6 +2,9 @@ package sym.labo2;
 
 import java.io.Serializable;
 
+/**
+ * Person class used to test serialization
+ */
 public class Person implements Serializable {
     private String name;
     private String firstname;
