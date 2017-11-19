@@ -20,7 +20,7 @@ import okhttp3.Response;
 /**
  * CommunicationManager that creates an async request and notify subscribed listeners
  * when it receive a response.
- * If there is no connection available, the request can be stored until connection is retrieved
+ * If there is no connection available, the request can be stored until connection is retrieved.
  */
 public class CommunicationManager {
 

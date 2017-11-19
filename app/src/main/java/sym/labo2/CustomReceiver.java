@@ -9,7 +9,8 @@ import android.util.Log;
 import android.widget.Toast;
 
 /**
- * Used to test and execute waiting request when connection is retrieved
+ * Used to test connection when a change in the connection status has occures
+ * and execute waiting request when connection is retrieved.
  */
 public class CustomReceiver extends BroadcastReceiver {
 

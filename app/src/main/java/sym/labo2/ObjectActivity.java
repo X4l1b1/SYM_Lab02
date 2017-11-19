@@ -13,7 +13,7 @@ import android.widget.Switch;
 import android.widget.TextView;
 
 /**
- * Activity used to send an object serializer as JSON or XML to a server and display the response
+ * Activity used to send an object serialized as JSON or XML to a server and display the response
  */
 public class ObjectActivity extends AppCompatActivity {
 

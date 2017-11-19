@@ -9,7 +9,7 @@ import android.view.View.OnClickListener;
 import android.view.View;
 
 /**
- * First activity
+ * MainActivity, start menu
  */
 public class MainActivity extends AppCompatActivity {
 
