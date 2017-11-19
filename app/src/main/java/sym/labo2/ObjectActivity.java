@@ -86,11 +86,7 @@ public class ObjectActivity extends AppCompatActivity {
         Person p = new Person(firstname.getText().toString(), name.getText().toString(),
                 gender.getSelectedItem().toString(), phone.getText().toString());
 
-        String serverAddress;
-
         RequestManager rd;
-
-        DataType contentType;
 
         //Serialize to JSON formal by default or XML
         if(!serializationSwitch.isChecked()) {

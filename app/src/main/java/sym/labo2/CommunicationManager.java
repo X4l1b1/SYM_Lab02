@@ -8,6 +8,7 @@ import android.os.AsyncTask;
 import android.util.Log;
 import android.widget.Toast;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.concurrent.TimeUnit;
 
@@ -153,7 +154,7 @@ public class CommunicationManager {
                 response = client.newCall(request).execute();
                 return requestManagers[0].handleResponse(response.body().bytes());
 
-            }catch (Exception e){
+            }catch (IOException e){
                 e.printStackTrace();
             }
 

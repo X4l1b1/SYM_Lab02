@@ -9,11 +9,13 @@ import com.google.gson.JsonObject;
 import org.jdom2.DocType;
 import org.jdom2.Document;
 import org.jdom2.Element;
+import org.jdom2.JDOMException;
 import org.jdom2.input.SAXBuilder;
 import org.jdom2.output.XMLOutputter;
 
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
+import java.io.IOException;
 import java.io.InputStream;
 import java.util.zip.Deflater;
 import java.util.zip.DeflaterOutputStream;
@@ -186,7 +188,9 @@ public class RequestManager {
 
             xml = new XMLOutputter().outputString(person);
 
-        } catch (Exception e) {
+        } catch (JDOMException e) {
+            e.printStackTrace();
+        } catch (IOException e) {
             e.printStackTrace();
         }
 
@@ -214,7 +218,7 @@ public class RequestManager {
 
             compressedData = baos.toByteArray();
 
-        } catch(Exception e) {
+        } catch(IOException e) {
             e.printStackTrace();
         }
 
@@ -248,7 +252,7 @@ public class RequestManager {
 
             decompressedData = baos.toString();
 
-        } catch(Exception e) {
+        } catch(IOException e) {
             e.printStackTrace();
         }
 
