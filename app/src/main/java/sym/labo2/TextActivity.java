@@ -16,7 +16,7 @@ import android.widget.TextView;
  */
 public class TextActivity extends AppCompatActivity {
 
-    private static final String TAG = "TextActivity";
+    private static final String TAG = TextActivity.class.getSimpleName();
 
     //Server address
     private final String TXT_SERVER  = "http://sym.iict.ch/rest/txt";
@@ -70,8 +70,9 @@ public class TextActivity extends AppCompatActivity {
 
         //Send request
         try {
-            communicationManager.sendRequest(text.getText().toString(), TXT_SERVER, ContentType.TXT,
-                    false, delaySwitch.isChecked());
+            communicationManager.sendRequest(
+                    new RequestManager(text.getText().toString(), DataType.TXT,
+                            false, TXT_SERVER), delaySwitch.isChecked());
         } catch (Exception e) {
             e.printStackTrace();
         }

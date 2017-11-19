@@ -4,7 +4,6 @@ import android.content.pm.ActivityInfo;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.text.method.ScrollingMovementMethod;
-import android.util.Log;
 import android.view.View;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
@@ -13,21 +12,12 @@ import android.widget.Spinner;
 import android.widget.Switch;
 import android.widget.TextView;
 
-import com.google.gson.Gson;
-import com.google.gson.JsonElement;
-import com.google.gson.JsonObject;
-
-import org.jdom2.DocType;
-import org.jdom2.Document;
-import org.jdom2.Element;
-import org.jdom2.output.XMLOutputter;
-
 /**
  * Activity used to send an object serializer as JSON or XML to a server and display the response
  */
 public class ObjectActivity extends AppCompatActivity {
 
-    private static final String TAG = "ObjectActivity";
+    private static final String TAG = ObjectActivity.class.getSimpleName();
 
     //Servers addresses
     private final String JSON_SERVER = "http://sym.iict.ch/rest/json";
@@ -83,64 +73,12 @@ public class ObjectActivity extends AppCompatActivity {
         communicationManager = new CommunicationManager(this.getApplicationContext());
         communicationManager.setCommunicationEventListener( new CommunicationEventListener(){
             public boolean handleServerResponse(String response) {
-
-                if(!serializationSwitch.isChecked())
-                    deserializeJSON(response);
-                else
-                    deserializeXML(response);
-
+                resultText.setText(response);
                 return true;
             }
         });
     }
 
-    private String serializeJSON(Person p) {
-        //Create JSON from object using GSON
-        JsonObject jsonObject = new JsonObject();
-        JsonElement jsonElement = new Gson().toJsonTree(p);
-        jsonObject.add("person", jsonElement);
-
-        return jsonObject.toString();
-    }
-
-    private void deserializeJSON(String s) {
-
-        //GSON object
-        Gson gson = new Gson();
-
-        //Recreate object from received response
-        JsonObject jsonObject = gson.fromJson(s, JsonObject.class);
-
-        Person p = gson.fromJson(jsonObject.get("person"), Person.class);
-        Log.i(TAG, "Created object from response : firstname = " + p.getFirstname()
-                + ", name = " + p.getName() + ", gender = " + p.getGender() + ", phone = " + p.getPhone());
-
-        resultText.setText(jsonObject.get("person").toString());
-    }
-
-    private String serializeXML(Person p) {
-
-        //Create XML from object using XML
-        DocType dtype = new DocType("directory", "http://sym.iict.ch/directory.dtd");
-        Element directory = new Element("directory");
-        Document doc = new Document(directory, dtype);
-
-        Element person = new Element("person");
-        person.addContent(new Element("name").setText(p.getName()));
-        person.addContent(new Element("firstname").setText(p.getFirstname()));
-        person.addContent(new Element("gender").setText("female"));
-        person.addContent(new Element("phone")
-                .setAttribute("type", "home")
-                .setText(p.getPhone()));
-        directory.addContent(person);
-
-        return new XMLOutputter().outputString(doc);
-    }
-
-    private void deserializeXML(String s) {
-        /* FIX ME */
-        resultText.setText(s);
-    }
 
     private void send() {
 
@@ -148,27 +86,22 @@ public class ObjectActivity extends AppCompatActivity {
         Person p = new Person(firstname.getText().toString(), name.getText().toString(),
                 gender.getSelectedItem().toString(), phone.getText().toString());
 
-        String serializedObject;
         String serverAddress;
 
-        ContentType contentType;
+        RequestManager rd;
+
+        DataType contentType;
 
         //Serialize to JSON formal by default or XML
         if(!serializationSwitch.isChecked()) {
-            serializedObject = serializeJSON(p);
-            serverAddress = JSON_SERVER;
-            contentType = ContentType.JSON;
+            rd = new RequestManager(p, DataType.JSON, compressSwitch.isChecked(), JSON_SERVER);
         } else {
-            serializedObject = serializeXML(p);
-            serverAddress = XML_SERVER;
-            contentType = ContentType.XML;
+            rd = new RequestManager(p, DataType.XML, compressSwitch.isChecked(), XML_SERVER);
         }
 
         //Send request
         try {
-            communicationManager.sendRequest(serializedObject, serverAddress, contentType
-                    , compressSwitch.isChecked(), false);
-            Log.i(TAG, "Sending : " + serializedObject);
+            communicationManager.sendRequest(rd, false);
         } catch (Exception e) {
             e.printStackTrace();
         }

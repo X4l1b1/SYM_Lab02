@@ -6,17 +6,10 @@ import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.os.AsyncTask;
 import android.util.Log;
-import android.util.Pair;
 import android.widget.Toast;
 
-import java.io.ByteArrayInputStream;
-import java.io.ByteArrayOutputStream;
 import java.util.ArrayList;
 import java.util.concurrent.TimeUnit;
-import java.util.zip.Deflater;
-import java.util.zip.DeflaterOutputStream;
-import java.util.zip.Inflater;
-import java.util.zip.InflaterInputStream;
 
 import okhttp3.MediaType;
 import okhttp3.OkHttpClient;
@@ -27,13 +20,11 @@ import okhttp3.Response;
 /**
  * CommunicationManager that creates an async request and notify subscribed listeners
  * when it receive a response.
- * The request content can be TXT, JSON or XML format
- * It can be compressed if needed
  * If there is no connection available, the request can be stored until connection is retrieved
  */
 public class CommunicationManager {
 
-    private static final String TAG = "ObjectSendRequest";
+    private static final String TAG = CommunicationManager.class.getSimpleName();
 
     //Media types
     private final String JSON_MEDIA_TYPE = "application/json; charset=utf-8";
@@ -42,14 +33,10 @@ public class CommunicationManager {
 
     //List of subscribed listener
     private ArrayList<CommunicationEventListener> listeners = new ArrayList<>();
-    private ArrayList<Pair<String, String>> delayedRequests = new ArrayList<>();
+    private ArrayList<RequestManager> delayedRequests = new ArrayList<>();
 
     //Actrivity context
     private Context ctx;
-
-    //Options
-    private ContentType contentType;
-    private boolean isCompressed = false;
 
     //Network informations
     private ConnectivityManager connectivityManager;
@@ -68,21 +55,17 @@ public class CommunicationManager {
                 new IntentFilter(ConnectivityManager.CONNECTIVITY_ACTION));
     }
 
-    public void sendRequest(String request, String url, ContentType type, boolean compress,
-                            boolean delay) throws Exception {
-
-        this.contentType  = type;
-        this.isCompressed = compress;
+    public void sendRequest(RequestManager data, boolean delay) throws Exception {
 
         activeNetworkInfo = connectivityManager.getActiveNetworkInfo();
 
         //Execute async request if connection is available
         if(activeNetworkInfo != null && activeNetworkInfo.isConnected()) {
-            new SendRequestTask().execute(request, url);
+            new SendRequestTask().execute(data);
         } else {
             if(delay) {
                 Toast.makeText(ctx, "Request added to list", Toast.LENGTH_LONG).show();
-                delayedRequests.add(new Pair(request, url));
+                delayedRequests.add(data);
             } else {
                 Toast.makeText(ctx, "No connection", Toast.LENGTH_LONG).show();
             }
@@ -93,13 +76,12 @@ public class CommunicationManager {
     public void sendDelayedRequests() {
 
         //Execute async request for every waiting request if connection is available
-        for(Pair<String, String> p : delayedRequests) {
+        for(RequestManager d : delayedRequests) {
 
             activeNetworkInfo = connectivityManager.getActiveNetworkInfo();
 
             if(activeNetworkInfo != null && activeNetworkInfo.isConnected()) {
-                Log.i(TAG, "Sending request...");
-                new SendRequestTask().execute(p.first, p.second);
+                new SendRequestTask().execute(d);
             } else {
                 Toast.makeText(ctx, "No Connection", Toast.LENGTH_LONG).show();
             }
@@ -113,70 +95,7 @@ public class CommunicationManager {
         this.listeners.add(l);
     }
 
-    private byte[] compress(String json) {
-
-        byte[] compressedJson = null;
-
-        Log.i(TAG, "Before compression : " + json);
-
-        ByteArrayOutputStream baos = new ByteArrayOutputStream();
-        Deflater def = new Deflater(Deflater.BEST_COMPRESSION, true);
-        DeflaterOutputStream dos = new DeflaterOutputStream(baos, def);
-
-        try {
-
-            dos.write(json.getBytes());
-            dos.flush();
-            dos.close();
-            baos.flush();
-            baos.close();
-
-            compressedJson = baos.toByteArray();
-
-        } catch(Exception e) {
-            e.printStackTrace();
-        }
-
-        Log.i(TAG, "After compression : " + compressedJson.toString());
-
-        return compressedJson;
-    }
-
-    private String decompress(byte[] bytes) {
-
-        String decompressedJson = null;
-
-        Log.i(TAG, "Before decompression : " + bytes.toString());
-
-        ByteArrayInputStream bis = new ByteArrayInputStream(bytes);
-        Inflater inf = new Inflater(true);
-        InflaterInputStream iis = new InflaterInputStream(bis, inf);
-        ByteArrayOutputStream baos = new ByteArrayOutputStream();
-
-        int bytesRead;
-
-        try{
-
-            while ((bytesRead = iis.read()) != -1) {
-                baos.write(bytesRead);
-            }
-
-            baos.flush();
-            baos.close();
-
-            decompressedJson = baos.toString();
-
-        } catch(Exception e) {
-            e.printStackTrace();
-        }
-
-        Log.i(TAG, "After decompression : " + decompressedJson);
-
-        return decompressedJson;
-
-    }
-
-    private class SendRequestTask extends AsyncTask<String, Void, String> {
+    private class SendRequestTask extends AsyncTask<RequestManager, Void, String> {
 
         OkHttpClient client = new OkHttpClient.Builder()
                 .connectTimeout(30, TimeUnit.SECONDS)
@@ -185,27 +104,26 @@ public class CommunicationManager {
                 .build();
 
         @Override
-        protected String doInBackground(String... params) {
-
-            byte[] bodyContent;
+        protected String doInBackground(RequestManager... requestManagers) {
 
             //OkHttp request builder
             Request.Builder requestBuilder = new Request.Builder();
 
+            byte[] bodyContent = requestManagers[0].constructRequestBody();
+
             //Compress the object and add the corresponding headers to request
-            if(isCompressed) {
-                bodyContent = compress(params[0]);
+            if(requestManagers[0].isCompressed())
                 requestBuilder
                         .addHeader("X-Network", "CSD")
                         .addHeader("X-Content-Encoding", "deflate");
-            } else {
-                bodyContent = params[0].getBytes();
-            }
+
+
+            Log.i(TAG, "Sending...");
 
             String mediaType = "";
 
             //Sets media type
-            switch(contentType) {
+            switch(requestManagers[0].getDataType()) {
                 case JSON :
                     mediaType = JSON_MEDIA_TYPE;
                     break;
@@ -222,7 +140,7 @@ public class CommunicationManager {
 
             //Create OkHttp request
             Request request = requestBuilder
-                    .url(params[1])
+                    .url(requestManagers[0].getUrl())
                     .post(body)
                     .build();
 
@@ -232,13 +150,7 @@ public class CommunicationManager {
             try {
 
                 response = client.newCall(request).execute();
-
-                //Decompress response
-                if(isCompressed) {
-                    return decompress(response.body().bytes());
-                }
-
-                return response.body().string();
+                return requestManagers[0].handleResponse(response.body().bytes());
 
             }catch (Exception e){
                 e.printStackTrace();

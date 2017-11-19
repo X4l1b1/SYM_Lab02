@@ -3,6 +3,6 @@ package sym.labo2;
 /**
  * Enum of available content types
  */
-public enum ContentType {
+public enum DataType {
     TXT, JSON, XML
 }

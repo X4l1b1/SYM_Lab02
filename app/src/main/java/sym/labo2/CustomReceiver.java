@@ -13,7 +13,7 @@ import android.widget.Toast;
  */
 public class CustomReceiver extends BroadcastReceiver {
 
-    private static final String TAG = "CustomReceiver";
+    private static final String TAG = CustomReceiver.class.getSimpleName();
 
     private CommunicationManager communicationManager;
 
