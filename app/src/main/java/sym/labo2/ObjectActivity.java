@@ -69,7 +69,7 @@ public class ObjectActivity extends AppCompatActivity {
             }
         });
 
-        //Create Request object
+        //Sets behaviour when notified with response
         communicationManager = new CommunicationManager(this.getApplicationContext());
         communicationManager.setCommunicationEventListener( new CommunicationEventListener(){
             public boolean handleServerResponse(String response) {

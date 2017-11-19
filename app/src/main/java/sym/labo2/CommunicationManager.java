@@ -64,7 +64,7 @@ public class CommunicationManager {
             new SendRequestTask().execute(data);
         } else {
             if(delay) {
-                Toast.makeText(ctx, "Request added to list", Toast.LENGTH_LONG).show();
+                Toast.makeText(ctx, "Request Added to List", Toast.LENGTH_LONG).show();
                 delayedRequests.add(data);
             } else {
                 Toast.makeText(ctx, "No connection", Toast.LENGTH_LONG).show();
@@ -82,6 +82,7 @@ public class CommunicationManager {
 
             if(activeNetworkInfo != null && activeNetworkInfo.isConnected()) {
                 new SendRequestTask().execute(d);
+                Toast.makeText(ctx, "Sending Waiting Requests", Toast.LENGTH_LONG).show();
             } else {
                 Toast.makeText(ctx, "No Connection", Toast.LENGTH_LONG).show();
             }
